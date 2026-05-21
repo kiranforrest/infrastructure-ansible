@@ -1,0 +1,19 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  
+- name: Ensure pipx is installed on system
+  ansible.builtin.package:
+    name: pipx
+    state: present
+
+- name: Install ansible with pipx
+  community.general.pipx:
+    name: ansible
+    install_deps: true
+    state: present
+
+- name: Ensure path from pipx
+  ansible.builtin.shell:
+    cmd: pipx ensurepath

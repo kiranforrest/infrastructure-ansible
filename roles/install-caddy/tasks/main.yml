@@ -1,0 +1,37 @@
+---
+- name: Make sure GPG key directory exists
+  ansible.builtin.file: 
+    path: /usr/share/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Download Caddy's official GPG key
+  ansible.builtin.get_url:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+    dest: /tmp/caddy.key
+    mode: "0644"
+
+- name: Dearmor GPG Key
+  command: >
+    gpg --dearmor -o /usr/share/keyrings/caddy.gpg /tmp/caddy.key
+  args:
+    creates: /usr/share/keyrings/caddy.gpg
+  
+- name: Add deb APT repository
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/caddy.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+    state: present
+
+- name: Add deb-src APT repository
+  apt_repository:
+    repo: "deb-src [signed-by=/usr/share/keyrings/caddy.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install caddyserver
+  ansible.builtin.package:
+    name: caddy
+    state: present
