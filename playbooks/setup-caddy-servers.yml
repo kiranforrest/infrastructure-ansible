@@ -1,0 +1,6 @@
+- name: setup-caddy-servers
+  hosts: caddy-proxies
+  become: yes
+  roles:
+    - install-caddy
+    - install-keepalived

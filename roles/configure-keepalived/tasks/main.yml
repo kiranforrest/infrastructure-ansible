@@ -1,0 +1,21 @@
+---
+- name: Get vault secret
+  include_role:
+    name: get-vault-secret
+  vars:
+    SECRET_PATH: "prod/kv/services/data/keepalived/config"
+
+- name: Extract Secret value
+  ansible.builtin.set_fact:
+    KEEPALIVED_PASS: SECRET_PATH.data.KEEPALIVED_PASS
+    PRIORITY: "{{ 100 + groups['caddy-proxies'].index(inventory_hostname) }}"
+
+####DO NODE PRIORITY NEXT
+
+- name: Render keepalived configuration
+  template:
+    src: configs/keepalived.jinja2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0640'

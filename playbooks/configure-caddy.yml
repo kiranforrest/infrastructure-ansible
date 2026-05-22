@@ -1,0 +1,5 @@
+- name: configure-caddy
+  hosts: caddy-proxies
+  become: yes
+  roles:
+    - configure-caddy

@@ -1,0 +1,2 @@
+VAULT_URL: "https://vault.thermion.tech"
+TOKEN_PATH: "/etc/vault-agent/token"

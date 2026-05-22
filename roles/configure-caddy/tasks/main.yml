@@ -1,0 +1,11 @@
+---
+- name: Copy Caddy Configuration
+  ansible.builtin.copy:
+    src: configs/Caddyfile
+    dest: /etc/caddy/Caddyfile
+
+- name: Reload Caddy
+  ansible.builtin.systemd:
+    name: caddy
+    state: restarted
+    enabled: true

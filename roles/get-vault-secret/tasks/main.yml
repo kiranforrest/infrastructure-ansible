@@ -1,0 +1,5 @@
+---
+- name: Get secret
+  set_fact:
+    vault_secret: >-
+      {{ lookup('community.hashi_vault.vault_kv2_get', SECRET_PATH, url=VAULT_URL,token=TOKEN_PATH) }}
