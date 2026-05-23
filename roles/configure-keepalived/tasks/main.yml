@@ -19,3 +19,9 @@
     owner: root
     group: root
     mode: '0640'
+
+- name: Make sure keepalived is running 
+  ansible.builtin.systemd:
+    name: keepalived
+    state: restarted
+    enabled: true
