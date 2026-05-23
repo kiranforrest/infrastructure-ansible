@@ -3,7 +3,7 @@
   include_role:
     name: get-vault-secret
   vars:
-    SECRET_PATH: "prod/kv/services/data/keepalived/config"
+    SECRET_PATH: "keepalived/config"
 
 - name: Extract Secret value
   ansible.builtin.set_fact:
