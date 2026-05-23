@@ -1,4 +1,8 @@
 ---
+- name: Print TOKEN_PATH
+  debug: 
+    var: TOKEN_PATH
+
 - name: Get secret
   set_fact:
     vault_secret: >-
