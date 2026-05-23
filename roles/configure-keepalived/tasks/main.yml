@@ -14,7 +14,7 @@
 
 - name: Render keepalived configuration
   template:
-    src: configs/keepalived.jinja2
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/keepalived.jinja2"
     dest: /etc/keepalived/keepalived.conf
     owner: root
     group: root
