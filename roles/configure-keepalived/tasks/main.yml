@@ -7,7 +7,7 @@
 
 - name: Extract Secret value
   ansible.builtin.set_fact:
-    KEEPALIVED_PASS: "{{ vault_secret.data.KEEPALIVED_PASS }}"
+    KEEPALIVED_PASS: "{{ vault_secret.raw.data.KEEPALIVED_PASS }}"
     PRIORITY: "{{ 100 + groups['caddy-proxies'].index(inventory_hostname) }}"
 
 ####DO NODE PRIORITY NEXT
