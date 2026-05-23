@@ -1,2 +1,2 @@
-VAULT_URL: "https://vault.thermion.tech"
-TOKEN_PATH: "/etc/vault-agent/token"
+VAULT_URL: "http://localhost:8200"
+TOKEN_PATH: "{{ lookup('env', 'TMPDIR') }}/token"

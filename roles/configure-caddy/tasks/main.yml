@@ -1,7 +1,7 @@
 ---
 - name: Copy Caddy Configuration
   ansible.builtin.copy:
-    src: configs/Caddyfile
+    src: "{{ lookup('env', 'TMPDIR') }}configs/Caddyfile"
     dest: /etc/caddy/Caddyfile
 
 - name: Reload Caddy
