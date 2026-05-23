@@ -1,13 +1,5 @@
 ---
-- name: Print TOKEN_PATH
-  debug: 
-    var: TOKEN_PATH
-
 - name: Get secret
   set_fact:
     vault_secret: >-
       {{ lookup('community.hashi_vault.vault_kv2_get', SECRET_PATH, url=VAULT_URL, engine_mount_point="prod/kv/services", token_file=TOKEN_PATH) }}
-
-- name: Print vault_secret
-  debug:
-    var: vault_secret
