@@ -14,16 +14,16 @@
   template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/consul-agent.hcl.jinja2"
     dest: /etc/consul.d/consul.hcl
-    owner: root
-    group: root
+    owner: consul
+    group: consul
     mode: '0600'
 
 - name: Copy CA certificate for trust
   ansible.builtin.copy:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/ca.crt"
     dest: /etc/consul.d/ca.crt
-    owner: root
-    group: root
+    owner: consul
+    group: consul
     mode: '0600'
 
 - name: Make sure consul is running and restarted
