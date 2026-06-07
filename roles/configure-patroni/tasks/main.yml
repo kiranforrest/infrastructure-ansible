@@ -16,8 +16,8 @@
   template:
     src: "{{ lookup('env', 'TMPDIR') }}/patroni/configs/config.yml.jinja2"
     dest: /etc/patroni/config.yml
-    owner: root
-    group: root
+    owner: postgres
+    group: postgres
     mode: '0600'
 
 - name: Make sure patroni is restarted
