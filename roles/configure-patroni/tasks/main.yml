@@ -10,7 +10,7 @@
     PATRONI_REPLICATION_PASS: "{{ vault_secret.data.data.PATRONI_REPLICATION_PASS }}"
     PATRONI_REWIND_PASS: "{{ vault_secret.data.data.PATRONI_REWIND_PASS }}"
     PATRONI_SUPERUSER_PASS: "{{ vault_secret.data.data.PATRONI_SUPERUSER_PASS }}"
-    NODE_ID: "pg{{ groups['psql-servers'].index(inventory_hostname) }}"
+    NODE_ID: "pg{{ groups['postgresql-servers'].index(inventory_hostname) }}"
 
 - name: Render patroni configuration
   template:
