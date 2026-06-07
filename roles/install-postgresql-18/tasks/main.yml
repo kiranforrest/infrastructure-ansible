@@ -4,8 +4,11 @@
     name: postgresql-common
     state: present
   
-- name: Install postgresql repo 
-  ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+- name: Install postgresql repo
+  expect:
+    command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+    responses:
+      'Press Enter to continue, or Ctrl-C to abort.': ''
 
 - name: Update apt cache 
   ansible.builtin.apt:
