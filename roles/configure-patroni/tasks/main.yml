@@ -1,0 +1,27 @@
+---
+- name: Get vault secret
+  include_role:
+    name: get-vault-secret
+  vars:
+    SECRET_PATH: "postgresql/patroni/config"
+
+- name: Setup Variables
+  ansible.builtin.set_fact:
+    PATRONI_REPLICATION_PASS: "{{ vault_secret.data.data.PATRONI_REPLICATION_PASS }}"
+    PATRONI_REWIND_PASS: "{{ vault_secret.data.data.PATRONI_REWIND_PASS }}"
+    PATRONI_SUPERUSER_PASS: "{{ vault_secret.data.data.PATRONI_SUPERUSER_PASS }}"
+    NODE_ID: "pg{{ groups['psql-servers'].index(inventory_hostname) }}"
+
+- name: Render patroni configuration
+  template:
+    src: "{{ lookup('env', 'TMPDIR') }}/patroni/configs/config.yml.jinja2"
+    dest: /etc/patroni/config.yml
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Make sure patroni is restarted
+  ansible.builtin.systemd:
+    name: patroni
+    state: restarted
+    enabled: true

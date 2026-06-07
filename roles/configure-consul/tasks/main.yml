@@ -1,0 +1,33 @@
+---
+- name: Get Agent Token
+  include_role:
+    name: get-vault-secret
+  vars:
+    SECRET_PATH: "consul/agent/config"
+  
+- name: Extract secret value
+  ansible.builtin.set_fact:
+    AGENT_TOKEN: "{{ vault_secret.data.data.AGENT_TOKEN }}"
+    GOSSIP_KEY: "{{ vault_secret.data.data.GOSSIP_KEY }}"
+
+- name: Render consul template configuration
+  template:
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/consul-agent.hcl.jinja2"
+    dest: /etc/consul.d/consul.hcl
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Copy CA certificate for trust
+  ansible.builtin.copy:
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/ca.crt"
+    dest: /etc/consul.d/ca.crt
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Make sure consul is running and restarted
+  ansible.builtin.systemd:
+    name: consul
+    state: restarted
+    enabled: true

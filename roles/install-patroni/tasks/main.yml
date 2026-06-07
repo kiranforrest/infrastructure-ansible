@@ -1,0 +1,17 @@
+---
+- name: Get postgresql-common package 
+  ansible.builtin.package:
+    name: postgresql-common
+    state: present
+  
+- name: Install postgresql repo 
+  ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+
+- name: Update apt cache 
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install patroni
+  ansible.builtin.package:
+    name: patroni
+    state: present

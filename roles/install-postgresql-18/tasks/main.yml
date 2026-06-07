@@ -1,0 +1,23 @@
+---
+- name: Get postgresql-common package 
+  ansible.builtin.package:
+    name: postgresql-common
+    state: present
+  
+- name: Install postgresql repo 
+  ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+
+- name: Update apt cache 
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install postgresql-18
+  ansible.builtin.package:
+    name: postgresql-18
+    state: present
+
+- name: Make sure that the systemd service is disabled !!!EVENTUALLY ADD VARIABLE TO DETERMINE IF PATRONI IS BEING USED OR NOT
+  ansible.builtin.systemd:
+    name: postgresql
+    state: stopped
+    enabled: false

@@ -1,0 +1,32 @@
+---
+- name: Make sure GPG key directory exists
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Download the official Hashicorp Consul GPG key
+  ansible.builtin.get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /tmp/consul.key
+    mode: "0644"
+
+- name: Dearmor GPG Key
+  command: >
+    gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg /tmp/consul.key
+  args:
+    creates: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+- name: Add deb APT repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com noble main"
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  
+- name: Install Hashicorp Consul
+  ansible.builtin.package:
+    name: consul
+    state: present

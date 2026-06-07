@@ -1,0 +1,5 @@
+- name: configure-patroni
+  hosts: postgresql-servers
+  become: yes
+  roles:
+    - configure-patroni

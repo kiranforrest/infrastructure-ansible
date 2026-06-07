@@ -1,0 +1,7 @@
+- name: setup-postgresql-servers
+  hosts: postgresql-servers
+  become: yes
+  roles:
+    - install-consul
+    - install-postgresql-18
+    - install-patroni
