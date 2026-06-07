@@ -1,0 +1,5 @@
+- name: configure-consul
+  hosts: postgresql-servers
+  become: yes
+  roles:
+    - configure-consul
