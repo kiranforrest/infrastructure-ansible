@@ -14,6 +14,11 @@
   ansible.builtin.apt:
     update_cache: yes
 
+- name: Install hashicorp consul python module
+  ansible.builtin.package:
+    name: python3-consul
+    state: present
+
 - name: Install patroni
   ansible.builtin.package:
     name: patroni
