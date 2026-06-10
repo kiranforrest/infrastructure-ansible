@@ -11,7 +11,7 @@
     PATRONI_REWIND_PASS: "{{ vault_secret.data.data.PATRONI_REWIND_PASS }}"
     PATRONI_SUPERUSER_PASS: "{{ vault_secret.data.data.PATRONI_SUPERUSER_PASS }}"
     NODE_ID: "pg{{ groups['postgresql-servers'].index(inventory_hostname) }}"
-    IPV4_ADDRESS: ansible_default_ipv4.address
+    IPV4_ADDRESS: "{{ ansible_default_ipv4.address }}"
 
 - name: Render patroni configuration
   template:
