@@ -53,17 +53,27 @@ thermiontech.headscale.get_preAuthKey:
 ### Fully deploy tailscale on a host by combining with the artis3n.tailscale.machine role. 
 ```yml
 - name: Deploy Tailscale
-    hosts: tailscale-machines
-    tasks:
-    - name: Get preAuthKey
-      thermiontech.headscale.get_preAuthKey:
-        headscale_url: "https://headscale.example.com"
-        api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
+  hosts: tailscale-machines
+  tasks:
+  - name: Get preAuthKey
+    thermiontech.headscale.get_preAuthKey:
+      headscale_url: "https://headscale.example.com"
+      api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
 
-    - name: Install and configure tailscale
-      ansible.builtin.include_role:
-        name: artis3n.tailscale.machine
-      vars:
-        tailscale_args: "--login-server='https://headscale.example.com'"
-        tailscale_authkey: "{{ headscale_preAuthKey }}"
+  - name: Install and configure tailscale
+    ansible.builtin.include_role:
+      name: artis3n.tailscale.machine
+    vars:
+      tailscale_args: "--login-server='https://headscale.example.com'"
+      tailscale_authkey: "{{ headscale_preAuthKey }}"
 ```
+
+## RETURN
+### headscale_preAuthKey
+description - The preAuthKey generated if the module completes successfully.
+
+type - string
+
+returned - on success
+
+sample - 1033bb6b2ae67bf339b1abfb2e1b70d0466ef4c284e2186b
