@@ -1,4 +1,4 @@
-# thermiontech.headscale.get_preAuthKey
+# thermiontech.headscale.get_pre_auth_key
 description -  Ansible module to retrieve a preAuthKey from a Headscale instance.
 
 Version Added - 0.1.0
@@ -39,13 +39,13 @@ default - 5
 ## EXAMPLES
 ### Create an preAuthKey
 ```yml
-thermiontech.headscale.get_preAuthKey:
+thermiontech.headscale.get_pre_auth_key:
     headscale_url: "https://headscale.example.com
     api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
 ```
 ### Create an preAuthKey key that has an expiration date of 10 minutes from now
 ```yml
-thermiontech.headscale.get_preAuthKey:
+thermiontech.headscale.get_pre_auth_key:
     headscale_url: "https://headscale.example.com"
     api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
     key_expiration: 10
@@ -56,7 +56,7 @@ thermiontech.headscale.get_preAuthKey:
   hosts: tailscale-machines
   tasks:
   - name: Get preAuthKey
-    thermiontech.headscale.get_preAuthKey:
+    thermiontech.headscale.get_pre_auth_key:
       headscale_url: "https://headscale.example.com"
       api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
 

@@ -11,7 +11,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: get_preAuthKey
+module: get_pre_auth_key
 
 short_description:  Ansible module to retrieve a preAuthKey from a Headscale instance. 
 
@@ -43,12 +43,12 @@ author:
 
 EXAMPLES = r'''
 - name: Create a preAuthKey.
-  thermiontech.headscale.get_preAuthKey:
+  thermiontech.headscale.get_pre_auth_key:
     headscale_url: "https://headscale.example.com
     api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
 
 - name: Create a preAuthKey that has an expiration date of 10 minutes from now.
-  thermiontech.headscale.get_preAuthKey:
+  thermiontech.headscale.get_pre_auth_key:
     headscale_url: "https://headscale.example.com"
     api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
     key_expiration: 10
@@ -58,7 +58,7 @@ EXAMPLES = r'''
     hosts: tailscale-machines
     tasks:
     - name: Get preAuthKey
-      thermiontech.headscale.get_preAuthKey:
+      thermiontech.headscale.get_pre_auth_key:
         headscale_url: "https://headscale.example.com"
         api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
 
