@@ -13,7 +13,7 @@ type - string
 
 Default - none
 ### api_key
-description - This is an api key generated from the headscale instance. To do this on the headscale server run ```bash headscale preauthkeys create -u <user_id>```
+description - This is an api key generated from the headscale instance. To do this on the headscale server run ```headscale preauthkeys create -u <user_id>```
 
 required - True
 
