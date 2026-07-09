@@ -28,12 +28,12 @@
 
 - name: Copy service definition needed
   ansible.builtin.copy:
-    src: "{{ lookup('env', 'TMPDIR') }}/service_definitions/{{ lookup('env', 'CONSUL_SERVICE') }}.service.hcl"
-    dest: "/etc/consul.d/{{ lookup('env', 'CONSUL_SERVICE') }}.service.hcl"
+    src: "{{ lookup('env', 'TMPDIR') }}/service_definitions/{{ consul_service }}.service.hcl"
+    dest: "/etc/consul.d/{{ consul_service }}.service.hcl"
     owner: consul
     group: consul
     mode: '0600'
-  when: lookup('env', 'CONSUL_SERVICE') != ''
+  when: consul_service is defined and consul_service != ''
 
 - name: Make sure consul is running and restarted
   ansible.builtin.systemd:

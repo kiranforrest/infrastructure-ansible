@@ -4,3 +4,4 @@
   roles:
     - install-caddy
     - install-keepalived
+    - install-consul

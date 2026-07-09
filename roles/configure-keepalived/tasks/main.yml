@@ -10,8 +10,6 @@
     KEEPALIVED_PASS: "{{ vault_secret.data.data.KEEPALIVED_PASS }}"
     PRIORITY: "{{ 100 + groups['caddy-proxies'].index(inventory_hostname) }}"
 
-####DO NODE PRIORITY NEXT
-
 - name: Render keepalived configuration
   template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/keepalived.jinja2"

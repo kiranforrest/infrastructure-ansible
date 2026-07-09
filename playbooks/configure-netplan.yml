@@ -1,0 +1,5 @@
+- name: configure-netplan
+  hosts: caddy-proxies
+  become: yes
+  roles:
+    - configure-netplan
