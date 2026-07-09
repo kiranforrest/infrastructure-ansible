@@ -2,7 +2,7 @@
 - name: Copy netplan configuration eth0 file
   template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/static-overlay-conf.yml.jinja2"
-    dest: /etc/netplan/static-overlay-conf.yml
+    dest: /etc/netplan/static-overlay-conf.yaml
     owner: root
     group: root
     mode: '0600'
@@ -10,7 +10,7 @@
 - name: Copy netplan configuration eth1 file
   template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/static-physical-conf.yml.jinja2"
-    dest: /etc/netplan/static-physical-conf.yml
+    dest: /etc/netplan/static-physical-conf.yaml
     owner: root
     group: root
     mode: '0600'
