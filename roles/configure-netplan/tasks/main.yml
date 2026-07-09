@@ -1,13 +1,19 @@
 ---
 - name: Copy netplan configuration eth0 file
-  ansible.builtin.copy:
+  template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/static-overlay-conf.yml.jinja2"
     dest: /etc/netplan/static-overlay-conf.yml
+    owner: root
+    group: root
+    mode: '0600'
 
 - name: Copy netplan configuration eth1 file
-  ansible.builtin.copy:
+  template:
     src: "{{ lookup('env', 'TMPDIR') }}/configs/static-physical-conf.yml.jinja2"
     dest: /etc/netplan/static-physical-conf.yml
+    owner: root
+    group: root
+    mode: '0600'
 
 - name: Apply Netplan configuration
   command: netplan apply
