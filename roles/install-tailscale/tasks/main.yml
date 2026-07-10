@@ -7,5 +7,5 @@
   ansible.builtin.include_role:
     name: artis3n.tailscale.machine
   vars:
-    tailscale_args: "--login-server='https://headscale.thermion.tech' --reset"
+    tailscale_args: "--login-server='https://headscale.thermion.tech' --reset --accept-dns=false"
     tailscale_authkey: "{{ headscale_preAuthKey }}"
