@@ -5,3 +5,4 @@
     - install-caddy
     - install-keepalived
     - install-consul
+    - install-tailscale
