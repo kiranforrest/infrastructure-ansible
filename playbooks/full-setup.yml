@@ -1,6 +1,2 @@
 ---
-- name: Configure EVPN appliances
-  hosts: evpnAppliance
-  tasks:
-    - name: configure-nftables
-      ansible.builtin.import_playbook: configure-nftables.yml
+- ansible.builtin.import_playbook: configure-nftables.yml
