@@ -1,2 +1,12 @@
 ---
 - ansible.builtin.import_playbook: configure-nftables.yml
+- name: Enable ip forwarding on evnpAppliances
+  hosts: evpnAppliance
+  become: yes
+  tasks:
+    - ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: true
+        state: present
+        reload: true
