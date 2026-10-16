@@ -1,0 +1,24 @@
+---
+- name: Render pdns configuration
+  template:
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/pdns.jinja2"
+    dest: /etc/powerdns/pdns.conf
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Render lmdb configuration
+  template:
+    src: "{{ lookup ('env', 'TMPDIR') }}/configs/lmdb.jinja2"
+    dest: /etc/powerdns/pdns.d/lmdb.conf
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Make sure that pdns authoritative server is running
+  ansible.builtin.systemd:
+    name: pdns
+    state: restarted
+    enabled: true
+
+

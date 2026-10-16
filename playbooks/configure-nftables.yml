@@ -1,0 +1,5 @@
+- name: configure-nftables
+  hosts: evpn-appliance
+  become: yes
+  roles: 
+    - configure-nftables

@@ -1,0 +1,12 @@
+---
+- name: Copy NFTables configuration
+  ansible.builtin.copy: 
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/nftables/network-appliance.conf"
+    dest: /etc/nftables.conf
+    mode: '0744'
+
+- name: Restart NFTables
+  ansible.builtin.systemd:
+    name: nftables
+    state: restarted
+    enabled: true

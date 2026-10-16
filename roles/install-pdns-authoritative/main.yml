@@ -1,0 +1,15 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install PowerDNS authoritative server
+  ansible.builtin.package:
+    name: pdns-server
+    state: present
+
+- name: Install PowerDNS authoritative server lmdb backend
+  ansible.builtin.package:
+    name: pdns-backend-lmdb
+    state: present
+
