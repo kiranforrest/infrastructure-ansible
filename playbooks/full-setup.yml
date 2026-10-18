@@ -1,4 +1,5 @@
 ---
+# Configure evnpAppliances
 - ansible.builtin.import_playbook: configure-nftables.yml
 - name: Enable ip forwarding on evnpAppliances
   hosts: evpnAppliance
@@ -10,3 +11,8 @@
         sysctl_set: true
         state: present
         reload: true
+
+#Configure dns servers
+## Should have keepalived floating 192.168.30.253 betweeen all of our dnsdist instances will be 153 for now until we move all of our infrastructure over and then we can update our configuration and test the Gitlab CI/CD integration we will have.  
+- ansible.builtin.import_playbook: setup-pdns-authoritative-servers.yml
+- ansible.builtin.import_playbook: configure-pdns-authoritative.yml

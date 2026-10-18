@@ -1,0 +1,5 @@
+- name: setup-pdns-authoritative-servers
+  hosts: pdnsAuth
+  become: yes
+  roles: 
+  - install-pdns-authoritative
