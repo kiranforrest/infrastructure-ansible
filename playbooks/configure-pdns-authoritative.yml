@@ -1,38 +1,48 @@
-- name: Get vault secret
-  include_role:
-    name: get-vault-secret
-  vars: 
-    SECRET_PATH: "powerdns/auth/config"
+- name: Get vault secrets
+  tasks:
+    - name: Get vault secret
+      include_role:
+        name: get-vault-secret
+      vars: 
+        SECRET_PATH: "powerdns/auth/config"
 
-- name: Extract secret values
-  ansible.builtin.set_fact:
-    API_KEY: "{{ vault_secret.data.data.API_KEY }}"
-    WEBSERVER_PASS: "{{ vault_secret.data.data.WEBSERVER_PASS }}"
+    - name: Extract secret values
+      ansible.builtin.set_fact:
+        API_KEY: "{{ vault_secret.data.data.API_KEY }}"
+        WEBSERVER_PASS: "{{ vault_secret.data.data.WEBSERVER_PASS }}"
 
 - name: Copy lmdb configuration to servers
   hosts: pdnsAuth
   become: yes
-  ansible.builtin.copy:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/lmdb.conf"
-    dest: /etc/powerdns/pdns.d/lmdb.conf
+  tasks:
+    - name: Copy configurations
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/lmdb.conf"
+        dest: /etc/powerdns/pdns.d/lmdb.conf
 
 - name: Render master server configuration
   hosts: pdnsAuth[0]
   become: yes
-  template:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/pdns-master.conf.jinja2"
-    dest: /etc/powerdns/pdns.conf
+  tasks:
+    - name: Copy master configuration
+      template:
+        src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/pdns-master.conf.jinja2"
+        dest: /etc/powerdns/pdns.conf
 
 - name: Render slave server configuration
   hosts: pdnsAuth:!pdnsAuth[0]
   become: yes
-  template:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/pdns-slave.conf.jinja2"
-    dest: /etc/powerdns/pdns.conf
+  tasks:
+    - name: Copy slave configuration
+      template:
+        src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/pdns-slave.conf.jinja2"
+        dest: /etc/powerdns/pdns.conf
 
 - name: Make sure authoritative server is running
   hosts: pdnsAuth
-  ansible.builtin.systemd:
-    name: pdns
-    state: restarted
-    enabled: true
+  tasks:
+    - name: Make sure pdns is running
+      ansible.builtin.systemd:
+        name: pdns
+        state: restarted
+        enabled: true
