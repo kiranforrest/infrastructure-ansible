@@ -1,4 +1,5 @@
 - name: Get vault secrets
+  hosts: all
   tasks:
     - name: Get vault secret
       include_role:
