@@ -16,13 +16,6 @@
   hosts: pdnsAuth
   become: yes
   tasks:
-    - name: Ensure path exists
-      ansible.builtin.file:
-        path: /etc/powerdns/pdns.d
-        state: directory
-        mode: '0600'
-        owner: root
-        group: root
     - name: Copy configurations
       ansible.builtin.copy:
         src: "{{ lookup('env', 'TMPDIR') }}/configs/authoritative/lmdb.conf"
