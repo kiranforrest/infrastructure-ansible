@@ -49,6 +49,11 @@
 - name: Make sure authoritative server is running
   hosts: pdnsAuth
   tasks:
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
     - name: Make sure pdns is running
       ansible.builtin.systemd:
         name: pdns
