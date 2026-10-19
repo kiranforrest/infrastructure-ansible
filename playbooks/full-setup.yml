@@ -14,5 +14,12 @@
 
 #Configure dns servers
 ## Should have keepalived floating 192.168.30.253 betweeen all of our dnsdist instances will be 153 for now until we move all of our infrastructure over and then we can update our configuration and test the Gitlab CI/CD integration we will have.  
+### Setup pdns-authoritative servers
 - ansible.builtin.import_playbook: setup-pdns-authoritative-servers.yml
-- ansible.builtin.import_playbook: configure-pdns-authoritative.yml
+- ansible.builtin.import_playbook: configure-pdns-authoritative-servers.yml
+### Setup pdns-recursive servers
+- ansible.builtin.import_playbook: setup-pdns-recursive-servers.yml
+- ansible.builtin.import_playbook: configure-pdns-recursive-servers.yml
+### Setup dnsdist servers
+- ansible.builtin.import_playbook: setup-dnsdist-servers.yml 
+- ansible.builtin.import_playbook: configure-dnsdist-servers.yml

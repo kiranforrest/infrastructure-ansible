@@ -1,0 +1,11 @@
+- name: Install PowerDNS recursor server package
+  hosts: pdnsRecur
+  tasks:
+    - name: Update apt cache 
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install PowerDNS recursor server
+      ansible.builtin.package:
+        name: pdns-recursor
+        state: present
+    

@@ -3,16 +3,16 @@
   include_role:
     name: get-vault-secret
   vars:
-    SECRET_PATH: "keepalived/config"
+    SECRET_PATH: "keepalived/{{ KEEPALIVED_SERVICE }}/config"
 
 - name: Extract Secret value
   ansible.builtin.set_fact:
     KEEPALIVED_PASS: "{{ vault_secret.data.data.KEEPALIVED_PASS }}"
-    PRIORITY: "{{ 100 + groups['caddy-proxies'].index(inventory_hostname) }}"
+    PRIORITY: "{{ 100 + group_names[0].index(inventory_hostname) }}"
 
 - name: Render keepalived configuration
   template:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/keepalived.jinja2"
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/keepalived/keepalived.{{ KEEPALIVED_SERVICE }}.conf.jinja2"
     dest: /etc/keepalived/keepalived.conf
     owner: root
     group: root

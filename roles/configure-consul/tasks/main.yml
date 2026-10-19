@@ -12,7 +12,7 @@
 
 - name: Render consul template configuration
   template:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/consul-agent.hcl.jinja2"
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/consul/consul-agent.hcl.jinja2"
     dest: /etc/consul.d/consul.hcl
     owner: consul
     group: consul

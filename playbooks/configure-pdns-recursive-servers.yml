@@ -1,0 +1,22 @@
+- name: Copy recursor configuration file to servers
+  hosts: pdnsRecur
+  tasks:
+    - name: Copy configuration
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'TMPDIR' ) }}/configs/recursive/recursor.conf"
+        dest: /etc/powerdns/recursor.conf
+  
+- name: Make sure recursive server is running
+  hosts: pdnsRecur
+  tasks:
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
+    - name: Make sure pdns-recursor server is running
+      ansible.builtin.systemd:
+        name: pdns-recursor
+        state: restarted
+        enabled: true
+        

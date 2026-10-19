@@ -1,0 +1,53 @@
+- name: Get vault secrets
+  hosts: dnsdist
+  tasks:
+    - name: Get vault secret 
+      include_role:
+        name: get-vault-secret
+      vars: 
+        SECRET_PATH: "powerdns/dnsdist/config"
+    - name: Extract secret values
+      ansible.builtin.set_fact:
+        CONSOLE_KEY: "{{ vault_secret.data.data.CONSOLE_KEY }}"
+
+- name: Copy dnsdist configuration to servers
+  hosts: dnsdist
+  become: yes
+  tasks:
+    - name: Render configuration
+      template:
+        src: "{{ lookup('env', 'TMPDIR' ) }}/configs/dnsdist/dnsdist.conf.jinja2"
+        dest: /etc/dnsdist/dnsdist.conf
+
+- name: Make sure dnsdist is running
+  hosts: dnsdist
+  become: yes
+  tasks:
+    - name: Disable systemd-resolved 
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
+    - name: Make sure dnsdist is running
+      ansible.builtin.systemd:
+        name: dnsdist
+        state: restarted
+        enabled: true
+
+- name: Configure hashicorp consul
+  hosts: dnsdist 
+  become: yes
+  roles:
+    - configure-consul
+
+## CONFIGURE KEEPALIVED 
+- name: Configure keepalived
+  hosts: dnsdist
+  become: yes
+  tasks: 
+    - name: Setup variables for keepalived
+      ansible.builtin.set_fact:
+        KEEPALIVED_SERVICE: "dnsdist"
+    - name: Setup keepalived
+      ansible.builtin.include_role:
+        name: configure-keepalived
