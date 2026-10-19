@@ -1,0 +1,9 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install gpg
+  ansible.builtin.package:
+    name: gpg
+    state: present
