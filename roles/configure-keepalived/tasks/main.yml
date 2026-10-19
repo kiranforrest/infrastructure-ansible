@@ -8,7 +8,7 @@
 - name: Extract Secret value
   ansible.builtin.set_fact:
     KEEPALIVED_PASS: "{{ vault_secret.data.data.KEEPALIVED_PASS }}"
-    PRIORITY: "{{ 100 + group_names[0].index(inventory_hostname) }}"
+    PRIORITY: "{{ 100 + groups[group_names[0]].index(inventory_hostname) }}"
 
 - name: Render keepalived configuration
   template:
