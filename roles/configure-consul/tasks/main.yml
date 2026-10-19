@@ -20,7 +20,7 @@
 
 - name: Copy CA certificate for trust
   ansible.builtin.copy:
-    src: "{{ lookup('env', 'TMPDIR') }}/configs/ca.crt"
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/consul/ca.crt"
     dest: /etc/consul.d/ca.crt
     owner: consul
     group: consul
@@ -28,7 +28,7 @@
 
 - name: Copy service definition needed
   ansible.builtin.copy:
-    src: "{{ lookup('env', 'TMPDIR') }}/service_definitions/{{ consul_service }}.service.hcl"
+    src: "{{ lookup('env', 'TMPDIR') }}/services/consul/service_definitions/{{ consul_service }}.service.hcl"
     dest: "/etc/consul.d/{{ consul_service }}.service.hcl"
     owner: consul
     group: consul
