@@ -1,0 +1,39 @@
+- name: Setup Gitlab servers
+  hosts: gitlab
+  become: yes
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install curl 
+      ansible.builtin.package:
+        name: curl
+        state: present
+    - name: Add gitlab repository
+      ansible.builtin.command: curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install gitlab community edition 
+      ansible.builtin.package:
+        name: gitlab-ce=18.11.2-ce.0
+        state: present
+    - name: Hold the gitlab-ce package so it is not spontaneously upgraded
+      ansible.builtin.dpkg_selections:
+        name: gitlab-ce
+        selection: hold
+
+- name: Install Hashicorp repository
+  hosts: gitlab
+  become: yes
+  roles:
+    - install-hashicorp-repository
+
+- name: Install Hashicorp Consul
+  hosts: gitlab
+  become: yes
+  tasks:
+    ansible.builtin.package:
+      name: consul
+      state: present
+

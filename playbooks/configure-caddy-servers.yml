@@ -1,0 +1,31 @@
+- name: Configure Caddy servers
+  hosts: caddyProxies
+  become: yes
+  tasks:
+    - name: Update hosts file
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^\S+\s+vault-01\.cluster\.thermion\.tech(\s|$)'
+        line: '10.0.3.100 vault-01.cluster.thermion.tech'
+        state: present
+        backup: yes
+    - name: Copy caddyfile to server
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'TMPDIR') }}/configs/caddy/Caddyfile"
+        dest: /etc/caddy/Caddyfile
+    - name: Reload caddy
+      ansible.builtin.systemd:
+        name: caddy
+        state: restarted
+        enabled: true
+- name: Configure keepalived 
+  hosts: caddyProxies
+  become: yes
+  tasks: 
+    - name: Setup variables for keepalived
+      ansible.builtin.set_fact:
+        KEEPALIVED_SERVICE: "caddy"
+        KEEPALIVED_PASS: "{{ keepalived_caddy_key }}"
+    - name: Setup keepalived
+      ansible.builtin.include_role:
+        name: configure-keepalived

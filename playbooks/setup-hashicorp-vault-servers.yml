@@ -1,0 +1,18 @@
+### Need to install vault
+- name: Install Hashicorp repository
+  hosts: hashiVault
+  become: yes
+  roles: 
+    - install-hashicorp-repository
+
+- name: Install Hashicorp vault
+  hosts: hashiVault
+  become: yes
+  tasks: 
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install Hashicorp Vault
+      ansible.builtin.package:
+        name: vault
+        state: present

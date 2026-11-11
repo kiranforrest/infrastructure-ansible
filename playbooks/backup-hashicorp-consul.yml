@@ -1,0 +1,92 @@
+- name: Get consul token
+  hosts: hashiConsul[0]
+  tasks:
+    - name: Get Vault secret
+      include_role:
+        name: get-vault-secret
+      vars:
+        SECRET_PATH: "consul/agent/config"
+    - name: Extract Secret value
+      ansible.builtin.set_fact:
+        CONSUL_HTTP_TOKEN: "{{ vault_secret.data.data.AGENT_TOKEN }}"
+
+- name: Create consul backup
+  hosts: hashiConsul[0]
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ CONSUL_HTTP_TOKEN }}"
+  tasks: 
+    - name: Get time
+      ansible.builtin.set_fact:
+        BACKUP_DATE: "{{ now(fmt='%Y-%m-%d-%H-%M-%S') }}"
+    - name: Copy certificates to control node 
+      ansible.builtin.fetch:
+        src: /etc/consul.d/server/mtls/server-agent.crt
+        dest: /tmp/fetched/
+        flat: true
+    - name: Copy certificates to control node
+      ansible.builtin.fetch:
+        src: /etc/consul.d/server/mtls/server-agent.key
+        dest: /tmp/fetched/
+        flat: true
+    - name: Create consul backup
+      ansible.builtin.shell: consul snapshot save /etc/consul.d/consul-backup-{{ BACKUP_DATE }}.snap
+    - name: Copy backup to control node
+      ansible.builtin.fetch:
+        src: /etc/consul.d/consul-backup-{{ BACKUP_DATE }}.snap
+        dest: /tmp/fetched/
+        flat: true
+    - name: Copy backup to S3 storage
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: hashicorp
+        bucket: hashicorp
+        object: consul/backups/consul-backup-{{ BACKUP_DATE }}.snap
+        src: /tmp/fetched/consul-backup-{{ BACKUP_DATE }}.snap
+        mode: put
+        aws_config:
+          s3:
+            addressing_style: path
+      delegate_to: localhost
+    - name: Copy server/mtls certificates to S3 storage
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: hashicorp
+        bucket: hashicorp
+        object: consul/server/mtls/server-agent.crt
+        src: /tmp/fetched/server-agent.crt
+        mode: put
+        aws_config:
+          s3: 
+            addressing_style: path
+      delegate_to: localhost
+    - name: Copy server/mtls certificates to S3 storage
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: hashicorp
+        bucket: hashicorp
+        object: consul/server/mtls/server-agent.key
+        src: /tmp/fetched/server-agent.key
+        mode: put
+        aws_config:
+          s3:
+            addressing_style: path
+      delegate_to: localhost
+    - name: Remove backup from consul server
+      ansible.builtin.file:
+        path: /etc/consul.d/consul-backup-{{ BACKUP_DATE }}.snap
+        state: absent
+    - name: Remove files from control node
+      ansible.builtin.file:
+        path: /tmp/fetched/consul-backup-{{ BACKUP_DATE }}.snap
+        state: absent
+      delegate_to: localhost
+    - name: Remove files from control node
+      ansible.builtin.file:
+        path: /tmp/fetched/server-agent.crt
+        state: absent
+      delegate_to: localhost
+    - name: Remove files from control node
+      ansible.builtin.file:
+        path: /tmp/fetched/server-agent.key
+        state: absent
+      delegate_to: localhost

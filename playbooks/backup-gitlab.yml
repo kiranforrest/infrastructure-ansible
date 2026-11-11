@@ -1,0 +1,27 @@
+- name: Create gitlab backup
+  hosts: gitlab[0]
+  become: yes
+  tasks:
+    - name: Create backup
+      ansible.builtin.command: gitlab-backup create SKIP=db STRATEGY=copy 
+    - name: Copy Gitlab secrets
+      ansible.builtin.fetch:
+        src: /etc/gitlab/gitlab-secrets.json
+        dest: /tmp/fetched/
+        flat: true
+- name: Backup to s3 storage
+  hosts: gitlab[0]
+  tasks:
+    - name: Upload gitlab secrets to S3 storage
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: gitlab
+        bucket: gitlab
+        object: secrets/gitlab-secrets.json
+        src: /tmp/fetched/gitlab-secrets.json
+        mode: put
+        aws_config: 
+          s3:
+            addressing_style: path
+      delegate_to: localhost
+

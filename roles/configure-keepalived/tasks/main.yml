@@ -4,10 +4,15 @@
     name: get-vault-secret
   vars:
     SECRET_PATH: "keepalived/{{ KEEPALIVED_SERVICE }}/config"
+  when: KEEPALIVED_PASS is not defined
 
 - name: Extract Secret value
   ansible.builtin.set_fact:
     KEEPALIVED_PASS: "{{ vault_secret.data.data.KEEPALIVED_PASS }}"
+  when: KEEPALIVED_PASS is not defined
+   
+- name: Set priority
+  ansible.builtin.set_fact: 
     PRIORITY: "{{ 100 + groups[group_names[0]].index(inventory_hostname) }}"
 
 - name: Render keepalived configuration

@@ -1,0 +1,37 @@
+- name: Create vault backup
+  hosts: hashiVault[0]
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+  tasks:
+    - name: Get time
+      ansible.builtin.set_fact:
+        BACKUP_DATE: "{{ now(fmt='%Y-%m-%d-%H-%M-%S') }}"
+    - name: Create vault backup 
+      ansible.builtin.shell: vault operator raft snapshot save /etc/vault.d/vault-backup-{{ BACKUP_DATE }}.snap
+    - name: Copy backup to control node
+      ansible.builtin.fetch:
+        src: /etc/vault.d/vault-backup-{{ BACKUP_DATE }}.snap
+        dest: /tmp/fetched/
+        flat: true
+    - name: Backup to S3 storage
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: hashicorp
+        bucket: hashicorp
+        object: vault/backups/vault-backup-{{ BACKUP_DATE }}.snap
+        src: /tmp/fetched/vault-backup-{{ BACKUP_DATE }}.snap
+        mode: put
+        aws_config:
+          s3:
+            addressing_style: path
+      delegate_to: localhost
+    - name: Remove backup from Vault server
+      ansible.builtin.file:
+        path: /etc/vault.d/vault-backup-{{ BACKUP_DATE }}.snap
+        state: absent
+    - name: Remove backup file from ansible control node
+      ansible.builtin.file:
+        path: /tmp/fetched/vault-backup-{{ BACKUP_DATE }}.snap
+        state: absent
+      delegate_to: localhost
+    

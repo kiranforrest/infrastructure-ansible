@@ -1,0 +1,80 @@
+- name: Copy needed files to vault server
+  hosts: hashiVault
+  tasks:
+    - name: Copy configuration
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'TMPDIR') }}/configs/vault/vault.hcl"
+        dest: /etc/vault.d/vault.hcl
+    - name: Find latest Vault backup
+      ansible.builtin.shell: aws s3 ls s3://hashicorp/vault/backups --profile hashicorp --recursive --endpoint-url https://s3.garage.thermion.tech | sort | tail -n 1 | awk {'print $4'}
+      register: command_output
+      delegate_to: localhost
+    - name: Download Vault backup from S3 server
+      amazon.aws.s3_object:
+        endpoint_url: https://s3.garage.thermion.tech
+        profile: hashicorp
+        bucket: hashicorp
+        object: "{{ command_output.stdout_lines[0] }}"
+        dest: "/tmp/fetched/{{ command_output.stdout_lines[0] }}"
+        mode: get 
+        aws_config:
+          s3:
+            addressing_style: path
+      delegate_to: localhost
+    - name: Copy vault backup to restore from
+      ansible.builtin.copy:
+        src: "/tmp/fetched/{{ command_output.stdout_lines[0] }}"
+        dest: /etc/vault.d/vault-backup.snap
+
+- name: Restore vault from backup
+  hosts: hashiVault
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+  tasks: 
+    - name: Make sure vault.db directory exists
+      ansible.builtin.file:
+        path: /var/lib/vault/raft
+        state: directory
+        mode: '0755'
+        owner: vault
+        group: vault
+    - name: Start vault
+      ansible.builtin.systemd:
+        name: vault
+        state: restarted
+        enabled: true
+    - name: Initialize Vault
+      ansible.builtin.shell: vault operator init | grep -E "hvs|Unseal Key" | awk {'print $4'}
+      register: command_output
+      ignore_errors: true
+    - name: Unseal Initialized Vault 1
+      ansible.builtin.shell: vault operator unseal {{ command_output.stdout_lines[0] }}
+      ignore_errors: true
+    - name: Unseal Initialized Vault 2
+      ansible.builtin.shell: vault operator unseal {{ command_output.stdout_lines[1] }}
+      ignore_errors: true
+    - name: Unseal Initialized Vault 3
+      ansible.builtin.shell: vault operator unseal {{ command_output.stdout_lines[2]}}
+      ignore_errors: true
+    - name: Restore vault from backup
+      ansible.builtin.command:
+        argv:
+          - vault
+          - operator
+          - raft
+          - snapshot
+          - restore
+          - -force
+          - /etc/vault.d/vault-backup.snap
+      environment:
+        VAULT_TOKEN: "{{ command_output.stdout_lines[5] }}"
+      ignore_errors: true
+    - name: Unseal Restored Vault 1
+      ansible.builtin.shell: vault operator unseal {{ vault_keys[0] }}
+      ignore_errors: true
+    - name: Unseal Restored Vault 2
+      ansible.builtin.shell: vault operator unseal {{ vault_keys[1] }}
+      ignore_errors: true
+    - name: Unseal Restored Vault 3
+      ansible.builtin.shell: vault operator unseal {{ vault_keys [2] }}
+      ignore_errors: true

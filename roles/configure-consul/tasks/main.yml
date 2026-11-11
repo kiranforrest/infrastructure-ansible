@@ -28,7 +28,7 @@
 
 - name: Copy service definition needed
   ansible.builtin.copy:
-    src: "{{ lookup('env', 'TMPDIR') }}/services/consul/service_definitions/{{ consul_service }}.service.hcl"
+    src: "{{ lookup('env', 'TMPDIR') }}/configs/consul/service_definitions/{{ consul_service }}.service.hcl"
     dest: "/etc/consul.d/{{ consul_service }}.service.hcl"
     owner: consul
     group: consul

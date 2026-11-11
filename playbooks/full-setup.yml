@@ -1,4 +1,17 @@
 ---
+# Configure Hashicorp Vault servers
+- ansible.builtin.import_playbook: setup-hashicorp-vault-servers.yml
+- ansible.builtin.import_playbook: configure-hashicorp-vault-servers.yml 
+
+# Setup hashicorp consul servers
+
+# Setup postgresql servers
+
+
+# Setup Gitlab servers
+- ansible.builtin.import_playbook: setup-gitlab-servers.yml
+- ansible.builtin.import_playbook: configure-gitlab-servers.yml
+
 # Configure evnpAppliances
 - ansible.builtin.import_playbook: configure-nftables.yml
 - name: Enable ip forwarding on evnpAppliances
@@ -12,14 +25,30 @@
         state: present
         reload: true
 
+### Setup Caddy servers - put them @ 192.168.30.120 for now for keepalived configuration
+- ansible.builtin.import_playbook: setup-caddy-servers.yml 
+- ansible.builtin.import_playbook: configure-caddy-servers.yml 
+
 #Configure dns servers
 ## Should have keepalived floating 192.168.30.253 betweeen all of our dnsdist instances will be 153 for now until we move all of our infrastructure over and then we can update our configuration and test the Gitlab CI/CD integration we will have.  
 ### Setup pdns-authoritative servers
 - ansible.builtin.import_playbook: setup-pdns-authoritative-servers.yml
 - ansible.builtin.import_playbook: configure-pdns-authoritative-servers.yml
+
 ### Setup pdns-recursive servers
 - ansible.builtin.import_playbook: setup-pdns-recursive-servers.yml
 - ansible.builtin.import_playbook: configure-pdns-recursive-servers.yml
 ### Setup dnsdist servers
 - ansible.builtin.import_playbook: setup-dnsdist-servers.yml 
 - ansible.builtin.import_playbook: configure-dnsdist-servers.yml
+
+# Configure Consul servers
+
+# Configure Nomad servers
+
+
+
+
+
+###Configure zones on our authoritative servers - Caddy servers need to be setup first for us to access http api 
+#- ansible.builtin.import_playbook: configure-pdns-authoritative-zones.yml

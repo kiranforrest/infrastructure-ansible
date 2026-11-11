@@ -1,0 +1,11 @@
+---
+#Backup hashicorp vault S3
+#- ansible.builtin.import_playbook: backup-hashicorp-vault.yml
+#Backup gitlab to S3
+#- ansible.builtin.import_playbook: backup-gitlab.yml 
+#Backup postgresql to S3
+
+#Backup hashicorp Consul state to S3
+- ansible.builtin.import_playbook: backup-hashicorp-consul.yml
+
+#Backup hashicorp Nomad state to S3

@@ -1,0 +1,23 @@
+- name: Setup consul and envoy proxy
+  hosts: gitlab
+  become: yes
+  tasks:
+    #SETUP CONSUL 
+    #SETUP consul-envoy proxy
+
+- name: Restore Gitlab from Backup on primary server
+  hosts: gitlab[0]
+  become: yes
+  tasks: 
+    - name: Render Gitlab configuration
+    - name: Copy Gitlab secrets
+    - name: Run gitlab-ctl reconfigure
+    - name: Restore Gitlab from S3 Backup 
+    - name: Download S3 Backup
+    - name: Copy S3 Backup to /var/opt/gitlab/backups git:git should own the file
+    # gitlab-ctl stop puma and sidekiq 
+    #run restore command gitlab-backup restore BACKUP=<backup_name> just the prefix before _gitlab
+    #restart gitlab and verify gitlab
+      #gitlab-ctl reconfigure
+      #gitlab-ctl restart 
+      #gitlab-rake gitlab:check SANITIZE=true

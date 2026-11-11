@@ -77,3 +77,98 @@ type - string
 returned - on success
 
 sample - 1033bb6b2ae67bf339b1abfb2e1b70d0466ef4c284e2186b
+# thermiontech.headscale.get_node_id_from_name
+description - Ansible module to retrieve a headscale node id based on the node name.
+
+Version added - 0.2.0
+
+## OPTIONS
+### headscale_url
+description - This should be the address of your headscale instance without the api path.
+
+required - True
+
+type - string
+
+Default - none
+### api_key
+description - This is an api key generated from the headscale instance. To do this on the headscale server run ```headscale preauthkeys create -u <user_id>```
+
+required - True
+
+type - string
+
+default - none
+### name
+description - This should be the node name you are trying to get a node id for.
+
+required - True
+
+type - string
+
+default - none
+## EXAMPLES
+### Get node id from Headscale instance
+```yml
+thermiontech.headscale.get_node_id_from_name:
+  headscale_url: "https://headscale.example.com"
+  api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
+  name: "prod-prm-vm-ubusrv-caddy-01"
+```
+## RETURN
+### headscale_node_id
+description - The node id associated with the given input node name.
+
+type - string
+
+returned - on succcess
+
+sample - 56
+
+# thermiontech.headscale.remove_node
+description - Ansible module used to remove a specific node from Headscale.
+
+Version added - 0.2.0
+
+## OPTIONS
+### headscale_url
+description - This should be the address of your headscale instance without the api path.
+
+required - True
+
+type - string
+
+Default - none
+### api_key
+description - This is an api key generated from the headscale instance. To do this on the headscale server run ```headscale preauthkeys create -u <user_id>```
+
+required - True
+
+type - string
+
+default - none
+### node_id
+description - This should be the node id for the node you are trying to remove from Headscale.
+
+required - True
+
+type - string
+
+## EXAMPLES
+### Remove node from Headscale
+```yml
+thermiontech.headscale.remove_node:
+  headscale_url: "https://headscale.example.com"
+  api_key: "TBOYk2d.woCKtE1_NE0Ke4E7y6osPtr_2BX-NyiB"
+  node_id: "56"
+```
+
+## RETURN
+### message
+description - Gives useful output about the return state of the module to help troubleshoot failures or view success.
+
+type - string
+
+returned - always
+
+sample - Successfully removed node from Headscale.
